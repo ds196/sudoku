@@ -203,13 +203,13 @@ void printGrid() {
                 samePoint = true;
             
             if(samePoint && lastActType == ADD)          // same point, added
-                cout << blue_fg << userGrid[r][c];
+                cout << bold_on << blue_fg << userGrid[r][c];
             else if(samePoint && lastActType == REMOVE)  //same point, blank
-                cout << blue_fg << '_';
+                cout << bold_on << blue_fg << '_';
             else if(startGrid[r][c] != BLANK)            // startgrid
-                cout << bold_on << startGrid[r][c];
+                cout << startGrid[r][c];
             else if(userGrid[r][c] != BLANK)             // usergrid
-                cout << userGrid[r][c];
+                cout << bold_on << userGrid[r][c];
             else if(userGrid[r][c] == BLANK && startGrid[r][c] == BLANK) // blank
                 cout << ' ';
             
