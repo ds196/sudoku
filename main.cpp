@@ -8,7 +8,7 @@
 using namespace std;
 
 const bool SAMPLE_GRID = false;
-const int GENPASSES = 60;
+const int GENPASSES = 80;
 
 const unsigned ROWS = 9;
 const unsigned COLS = 9;
@@ -173,9 +173,9 @@ void genGrid() {
                 startGrid[r][c] = BLANK;
 
         for(unsigned i = 0; i < GENPASSES; i++) {
-            unsigned r = rand() % (ROWS-1); // random 0-8
-            unsigned c = rand() % (COLS-1); // random 0-8
-            unsigned d = rand() % 9; // random 0-9, for digit in square
+            unsigned r = rand() % ROWS; // random 0-8
+            unsigned c = rand() % COLS; // random 0-8
+            unsigned d = rand() % 10; // random 0-9, for digit in square
 
             unsigned previous = startGrid[r][c];
             startGrid[r][c] = d; // random 0-9
@@ -245,19 +245,6 @@ void printGrid() {
         if(r == 2 || r == 5 || r == 8)
             cout << separator;
     }
-    
-    /*cout << "0 | " << "#" << " " << "#" << " " << "#" << " | " << "#" << " " << "#" << " " << "#" << " | " << "#" << " " << "#" << " " << "#" << " |\n";
-    cout << "1 | " << "#" << " " << "#" << " " << "#" << " | " << "#" << " " << "#" << " " << "#" << " | " << "#" << " " << "#" << " " << "#" << " |\n";
-    cout << "2 | " << "#" << " " << "#" << " " << "#" << " | " << "#" << " " << "#" << " " << "#" << " | " << "#" << " " << "#" << " " << "#" << " |\n";
-    cout << "  +-+-+-+-+-+-+-+-+-+-+-+-+\n";
-    cout << "3 | " << "#" << " " << "#" << " " << "#" << " | " << "#" << " " << "#" << " " << "#" << " | " << "#" << " " << "#" << " " << "#" << " |\n";
-    cout << "4 | " << "#" << " " << "#" << " " << "#" << " | " << "#" << " " << "#" << " " << "#" << " | " << "#" << " " << "#" << " " << "#" << " |\n";
-    cout << "5 | " << "#" << " " << "#" << " " << "#" << " | " << "#" << " " << "#" << " " << "#" << " | " << "#" << " " << "#" << " " << "#" << " |\n";
-    cout << "  +-+-+-+-+-+-+-+-+-+-+-+-+\n";
-    cout << "6 | " << "#" << " " << "#" << " " << "#" << " | " << "#" << " " << "#" << " " << "#" << " | " << "#" << " " << "#" << " " << "#" << " |\n";
-    cout << "7 | " << "#" << " " << "#" << " " << "#" << " | " << "#" << " " << "#" << " " << "#" << " | " << "#" << " " << "#" << " " << "#" << " |\n";
-    cout << "8 | " << "#" << " " << "#" << " " << "#" << " | " << "#" << " " << "#" << " " << "#" << " | " << "#" << " " << "#" << " " << "#" << " |\n";
-    cout << "  +-+-+-+-+-+-+-+-+-+-+-+-+\n";*/
 
     /*cout << "    0 1 2   3 4 5   6 7 8  \n";
     cout << "  +-+-+-+-+-+-+-+-+-+-+-+-+\n";
@@ -438,7 +425,7 @@ bool checkValid() {
         for(unsigned cBox = 0; cBox < 3; cBox++) { // 3 boxes per col
             // Inside box
             for(unsigned r = rBox*3; r < (rBox+1)*3; r++) { // 3 rows per box, start at beginning of box and end before start of next box (even if the next box doesn't exist)
-                for(unsigned c = rBox*3; c < (rBox+1)*3; c++) // 3 cols per box
+                for(unsigned c = cBox*3; c < (cBox+1)*3; c++) // 3 cols per box
                     if(startGrid[r][c] != BLANK) { // We don't care about how many blank squares there are for generating
                         if(!flags[startGrid[r][c]]) // Digit hasn't been found
                             flags[startGrid[r][c]] = true; // Now it has been found
