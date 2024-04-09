@@ -30,7 +30,7 @@ using std::srand;
 // Whether or not to use the included sample board.
 // Warning: the random board generator performs no check
 //     to determine if the board is actually solvable.
-const bool SAMPLE_GRID = false;
+const bool SAMPLE_GRID = true;
 // Number of random number gen iterations to perform on board
 const int GENPASSES = 80;
 
