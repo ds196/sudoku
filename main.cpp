@@ -499,6 +499,9 @@ void countNums() {
 }
 
 unsigned charToUInt(char c) {
-    return (unsigned)(c - '0');
+    if(isdigit(c))
+        return (unsigned)(c - '0');
+    else
+        return 0;
 }
 
