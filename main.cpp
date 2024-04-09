@@ -3,10 +3,12 @@
 #include <string>
 #include <climits>
 #include <cstdlib>
+#include <time.h>
 
 using namespace std;
 
-const bool SAMPLE_GRID = true;
+const bool SAMPLE_GRID = false;
+const int GENPASSES = 60;
 
 const unsigned ROWS = 9;
 const unsigned COLS = 9;
@@ -65,6 +67,7 @@ void takeInput(char&, unsigned&, unsigned&, unsigned&);
 void insert(unsigned, unsigned, unsigned);
 void remove(unsigned, unsigned);
 bool checkWin();
+bool checkValid();
 void clearFlags(bool[]);
 void countNums();
 unsigned charToUInt(char);
@@ -162,9 +165,25 @@ void genGrid() {
                 startGrid[8][7] = 7;
                 startGrid[8][8] = 9;
     } else {
+
+        srand(time(NULL)); // seed for rand
+
         for(unsigned r = 0; r < ROWS; r++)
             for(unsigned c = 0; c < COLS; c++)
-                startGrid[r][c] = rand() % 9; // Random number 0-9
+                startGrid[r][c] = BLANK;
+
+        for(unsigned i = 0; i < GENPASSES; i++) {
+            unsigned r = rand() % (ROWS-1); // random 0-8
+            unsigned c = rand() % (COLS-1); // random 0-8
+            unsigned d = rand() % 9; // random 0-9, for digit in square
+
+            unsigned previous = startGrid[r][c];
+            startGrid[r][c] = d; // random 0-9
+
+            if(!checkValid())
+                startGrid[r][c] = previous;
+
+        }
     }
 
 }
@@ -385,6 +404,57 @@ bool checkWin() {
     return true;
 }
 
+bool checkValid() {
+    bool flags[ROWS + 1];
+    clearFlags(flags);
+
+    // Check if columns are discrete
+    for(unsigned r = 0; r < ROWS; r++) {
+        for(unsigned c = 0; c < COLS; c++)
+            if(startGrid[r][c] != BLANK) {  // We don't care about how many blank squares there are for generating
+                if(!flags[startGrid[r][c]]) // Digit hasn't been found
+                    flags[startGrid[r][c]] = true; // Now it has been found
+                else // if it has already been found
+                    return false;
+            }
+        clearFlags(flags);
+    }
+    
+    // Check if rows are discrete
+    for(unsigned c = 0; c < COLS; c++) {
+        for(unsigned r = 0; r < ROWS; r++)
+            if(startGrid[r][c] != BLANK) { // We don't care about how many blank squares there are for generating
+                if(!flags[startGrid[r][c]]) // Digit hasn't been found
+                    flags[startGrid[r][c]] = true; // Now it has been found
+                else // if it has already been found
+                    return false;
+            }
+        // Clear after every column
+        clearFlags(flags);
+    }
+
+    // Check if boxes are discrete
+    for(unsigned rBox = 0; rBox < 3; rBox++) { // 3 boxes per row
+        for(unsigned cBox = 0; cBox < 3; cBox++) { // 3 boxes per col
+            // Inside box
+            for(unsigned r = rBox*3; r < (rBox+1)*3; r++) { // 3 rows per box, start at beginning of box and end before start of next box (even if the next box doesn't exist)
+                for(unsigned c = rBox*3; c < (rBox+1)*3; c++) // 3 cols per box
+                    if(startGrid[r][c] != BLANK) { // We don't care about how many blank squares there are for generating
+                        if(!flags[startGrid[r][c]]) // Digit hasn't been found
+                            flags[startGrid[r][c]] = true; // Now it has been found
+                        else // if it has already been found
+                            return false;
+                    }
+            }
+            // Clear after every box
+            clearFlags(flags);
+        }
+    }
+
+    // No errors found, current board is valid
+    return true;
+}
+
 void clearFlags(bool flags[]) {
     for(unsigned i = 0; i < ROWS + 1; i++)
         flags[i] = false;
@@ -407,3 +477,4 @@ void countNums() {
 unsigned charToUInt(char c) {
     return (unsigned)(c - '0');
 }
+
