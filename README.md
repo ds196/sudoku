@@ -12,5 +12,7 @@ run `make` to compile with `g++ c++11`
 ### Instructions to play:
 
 Add numbers to board with `a###` (row, column, digit, i.e. a024 for setting row 0, column 2, to 4)
+
 Remove numbers previously added with `r##` (row, column, i.e. r02 for removing row 0, column 2)
-Exit game with `x`
+
+Exit game with `x` 
