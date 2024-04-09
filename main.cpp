@@ -1,3 +1,17 @@
+/**************************************************
+ * David Sharpe
+ * 09/04/2024
+ * Sudoku Terminal Game
+ * 
+ * Usage:
+ *     a### to add a number to the board
+ *         (row, column, digit to add)
+ *     r##  to remove a number previously added
+ *         (row, column)
+ *     x    to exit the game
+ *         (no arguments)
+ **************************************************
+ */
 #include <iostream>
 #include <iomanip>
 #include <string>
@@ -7,6 +21,9 @@
 
 using namespace std;
 
+// whether or not to use the included sample board.
+// Warning: the random board generator performs no check
+//     to determine if the board is actually solvable.
 const bool SAMPLE_GRID = false;
 const int GENPASSES = 80;
 
