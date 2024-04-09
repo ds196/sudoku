@@ -19,7 +19,12 @@
 #include <cstdlib>
 #include <time.h>
 
-using namespace std;
+using std::cout;
+using std::cin;
+using std::string;
+using std::time;
+using std::rand;
+using std::srand;
 
 // whether or not to use the included sample board.
 // Warning: the random board generator performs no check
