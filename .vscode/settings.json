@@ -1,3 +1,10 @@
 {
-    "C_Cpp.default.compilerPath": "/usr/bin/g++"
+    "C_Cpp.default.compilerPath": "/usr/bin/g++",
+    "makefile.launchConfigurations": [
+        {
+            "cwd": "/home/david/repos/sudoku/out",
+            "binaryPath": "/home/david/repos/sudoku/out/sudoku",
+            "binaryArgs": []
+        }
+    ]
 }
