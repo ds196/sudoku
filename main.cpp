@@ -22,6 +22,7 @@
 using std::cout;
 using std::cin;
 using std::string;
+using std::getline;
 using std::time;
 using std::rand;
 using std::srand;
@@ -291,43 +292,57 @@ void takeInput(char& cmd, unsigned& row, unsigned& col, unsigned& digit) {
      * a### - add number
      * x    - exit
      */
-    char rowC;
-    char colC;
-    char digitC;
+    string userInput;
+    
+    // Prompt
     cout << "\n(Commands: r## (remove), a### (add), x (exit))\n";
-    cout << clear_line; // clears previous command
-    cout << '\n'; // Makes sure error line is on screen from start
-    up(1);        // "
+    cout << clear_line; // Clears previous command
+    cout << '\n';       // Makes sure error line is on screen from start
+    up(1);              // "
     cout << "Enter command: ";
-    cin >> cmd;
-    cout << clear_line;  // Clear error line
-    if(!cin) {
+    
+    getline(cin, userInput);
+
+    // Safety check of cin status
+    if(!cin.good()) {
         cout << "Oh crap\n";
         exit(1);
     }
+
+    // Ignore empty input when only \n typed
+    if(userInput.length() == 0) {
+        cmd = NONE;  // Take no action on board
+        return;      // No change to board, re-prints board and re-prompts user
+    } // implied else for rest of function
+
+    cmd = userInput[0];
+    
+    // Invalid input provided
+    // Short-circuit logic is used to prevent seg fault
+    if(!(
+           (cmd == EXIT   && userInput.length() == 1 /*x*/)
+        || (cmd == ADD    && userInput.length() == 4 /*a###*/ && isdigit(userInput[1]) && isdigit(userInput[2]) && isdigit(userInput[3])) 
+        || (cmd == REMOVE && userInput.length() == 3 /*r##*/  && isdigit(userInput[1]) && isdigit(userInput[2])) 
+        ))
+    {
+        cmd = NONE;  // Take no action on board
+        cout << "Error: invalid input\r";
+        return;      // No change to board, re-prints board and re-prompts user 
+    }
+
+    // Exit program on exit command
     if(cmd == EXIT) {
-        cout << "Exit command received, exiting...\n";
+        cout << "Exit command received, exiting...\r";
         exit(0);
-    } else 
-    if(cmd == ADD || cmd == REMOVE) {
-        cin >> rowC;
-        cin >> colC;
-        if(!cin) {
-            cout << "Oh crap\n";
-            exit(1);
-        }
-        row = charToUInt(rowC);
-        col = charToUInt(colC);
     }
-    if(cmd == ADD) {
-        cin >> digitC;
-        if(!cin) {
-            cout << "Oh crap\n";
-            exit(1);
-        }
-        digit = charToUInt(digitC);
-    }
-    cin.ignore(INT_MAX, '\n');
+
+    // Take provided row and column chars and cast to uInts
+    row = charToUInt(userInput[1]);
+    col = charToUInt(userInput[2]);
+    if(cmd == ADD)
+        digit = charToUInt(userInput[3]);
+    
+    // Returns via reference params cmd, row, col, and digit
 }
 
 void insert(unsigned row, unsigned col, unsigned digit) {
