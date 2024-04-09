@@ -2,7 +2,7 @@
 
 Super simple cli sudoku game.
 
-run `make` to compile with `g++ c++11`
+run `make` to compile with `g++` `c++11`
 
 ## Usage:
 
