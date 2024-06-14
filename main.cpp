@@ -2,7 +2,7 @@
  * David Sharpe
  * 09/04/2024
  * Sudoku Terminal Game
- * 
+ *
  * Usage:
  *     a### to add a number to the board
  *         (row, column, digit to add)
@@ -12,20 +12,21 @@
  *         (no arguments)
  **************************************************/
 
-#include <iostream>
-#include <iomanip>
-#include <string>
-#include <climits>
-#include <cstdlib>
 #include <time.h>
 
-using std::cout;
+#include <climits>
+#include <cstdlib>
+#include <iomanip>
+#include <iostream>
+#include <string>
+
 using std::cin;
-using std::string;
+using std::cout;
 using std::getline;
-using std::time;
 using std::rand;
 using std::srand;
+using std::string;
+using std::time;
 
 // Whether or not to use the included sample board.
 // Warning: the random board generator performs no check
@@ -60,7 +61,7 @@ Grid userGrid;
 // Number of each digit remaining to be placed on board by user
 int numCounts[ROWS + 1];
 // Coords on board of last action by user
-unsigned lastPointActed[2] {0, 0};  // Location of the last action
+unsigned lastPointActed[2]{0, 0};  // Location of the last action
 // Last action performed by user (NONE, ADD, or REMOVE)
 char lastActType = NONE;  // n - no action yet, a - added, r - removed
 
@@ -118,12 +119,12 @@ int main(void) {
     // Whether or not the player has won yet, found with checkWin()
     bool won = false;
 
-	clearUserGrid();
+    clearUserGrid();
     genGrid();
     do {
         countNums();
         printGrid();
-        
+
         // Take input //
 
         // Action the user wants to perform
@@ -137,13 +138,13 @@ int main(void) {
         unsigned digit;
 
         takeInput(cmd, row, col, digit);
-        
+
         if (cmd == ADD) {
             insert(row, col, digit);
         } else if (cmd == REMOVE) {
             remove(row, col);
         }
-        
+
         won = checkWin();
         if (!won)  // If the player has not won yet, will print board again.
             up(17);
@@ -171,12 +172,12 @@ void genGrid() {
     for (unsigned r = 0; r < ROWS; r++)
         for (unsigned c = 0; c < COLS; c++)
             startGrid[r][c] = BLANK;
-    
+
     if (SAMPLE_GRID) {
         // Use sample grid from Wikipedia for testing
         // https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Sudoku_Puzzle_by_L2G-20050714_standardized_layout.svg/1200px-Sudoku_Puzzle_by_L2G-20050714_standardized_layout.svg.png
-        
-        // clang-format off
+
+        // clang-format off: tabbed by square
         startGrid[0][0] = 5;
         startGrid[0][1] = 3;
             startGrid[0][4] = 7;
@@ -221,7 +222,6 @@ void genGrid() {
                 startGrid[8][8] = 9;
         // clang-format on
     } else {
-
         srand(time(NULL));  // seed for rand
 
         for (unsigned r = 0; r < ROWS; r++)
@@ -231,17 +231,15 @@ void genGrid() {
         for (unsigned i = 0; i < GENPASSES; i++) {
             unsigned r = rand() % ROWS;  // random 0-8
             unsigned c = rand() % COLS;  // random 0-8
-            unsigned d = rand() % 10;  // random 0-9, for digit in square
+            unsigned d = rand() % 10;    // random 0-9, for digit in square
 
             unsigned previous = startGrid[r][c];
             startGrid[r][c] = d;  // random 0-9
 
-            if(!checkValid())
+            if (!checkValid())
                 startGrid[r][c] = previous;
-
         }
     }
-
 }
 
 // Sets all digits in userGrid to BLANK
@@ -253,8 +251,8 @@ void clearUserGrid() {
 
 // Each element of result is sum of userGrid and startGrid
 void combineGrids(Grid result) {
-    for (unsigned r = 0; r < ROWS; r++) 
-        for (unsigned c = 0; c < COLS; c++) 
+    for (unsigned r = 0; r < ROWS; r++)
+        for (unsigned c = 0; c < COLS; c++)
             result[r][c] = userGrid[r][c] + startGrid[r][c];
 }
 
@@ -280,18 +278,18 @@ void printGrid() {
             bool samePoint = false;
             if (lastPointActed[0] == r && lastPointActed[1] == c)
                 samePoint = true;
-            
-            if (samePoint && lastActType == ADD)          // same point, added
+
+            if (samePoint && lastActType == ADD)  // same point, added
                 cout << bold_on << blue_fg << userGrid[r][c];
-            else if (samePoint && lastActType == REMOVE)  //same point, blank
+            else if (samePoint && lastActType == REMOVE)  // same point, blank
                 cout << bold_on << blue_fg << '_';
-            else if (startGrid[r][c] != BLANK)            // startgrid
+            else if (startGrid[r][c] != BLANK)  // startgrid
                 cout << startGrid[r][c];
-            else if (userGrid[r][c] != BLANK)             // usergrid
+            else if (userGrid[r][c] != BLANK)  // usergrid
                 cout << bold_on << userGrid[r][c];
-            else if (userGrid[r][c] == BLANK && startGrid[r][c] == BLANK) // blank
+            else if (userGrid[r][c] == BLANK && startGrid[r][c] == BLANK)  // blank
                 cout << ' ';
-            
+
             // Num separator and clear formatting
             cout << clear_formatting << ' ';
             // Box separator
@@ -300,7 +298,7 @@ void printGrid() {
         }
         // End of line
         // cout << "|\n";
-        cout << "|     " << r+1 << ": " << numCounts[r+1] << " left.\n";
+        cout << "|     " << r + 1 << ": " << numCounts[r + 1] << " left.\n";
         // Box separator
         if (r == 2 || r == 5 || r == 8)
             cout << separator;
@@ -332,7 +330,7 @@ void takeInput(char& cmd, unsigned& row, unsigned& col, unsigned& digit) {
      * x    - exit
      */
     string userInput;
-    
+
     // Prompt //
 
     cout << "\n(Commands: r## (remove), a### (add), x (exit))\n";
@@ -340,7 +338,7 @@ void takeInput(char& cmd, unsigned& row, unsigned& col, unsigned& digit) {
     cout << '\n';        // Makes sure error line is on screen from start
     up(1);               // "
     cout << "Enter command: ";
-    
+
     getline(cin, userInput);
 
     // Safety check of cin status
@@ -358,18 +356,17 @@ void takeInput(char& cmd, unsigned& row, unsigned& col, unsigned& digit) {
     // Parse input //
 
     cmd = userInput[0];
-    
+
     // Invalid input provided
     // Short-circuit logic is used to prevent seg fault
-    if(!(
-           (cmd == EXIT   && userInput.length() == 1 /*x*/)
-        || (cmd == ADD    && userInput.length() == 4 /*a###*/ && isdigit(userInput[1]) && isdigit(userInput[2]) && isdigit(userInput[3])) 
-        || (cmd == REMOVE && userInput.length() == 3 /*r##*/  && isdigit(userInput[1]) && isdigit(userInput[2])) 
-        ))
-    {
+    if (!((cmd == EXIT && userInput.length() == 1 /*x*/) ||
+          (cmd == ADD && userInput.length() == 4 /*a###*/ && isdigit(userInput[1]) &&
+           isdigit(userInput[2]) && isdigit(userInput[3])) ||
+          (cmd == REMOVE && userInput.length() == 3 /*r##*/ && isdigit(userInput[1]) &&
+           isdigit(userInput[2])))) {
         cmd = NONE;  // Take no action on board
         cout << "Error: invalid input\r";
-        return;      // No change to board, re-prints board and re-prompts user 
+        return;  // No change to board, re-prints board and re-prompts user
     }
 
     // Exit program on exit command
@@ -383,7 +380,7 @@ void takeInput(char& cmd, unsigned& row, unsigned& col, unsigned& digit) {
     col = charToUInt(userInput[2]);
     if (cmd == ADD)
         digit = charToUInt(userInput[3]);
-    
+
     // Returns via reference params cmd, row, col, and digit
 }
 
@@ -394,10 +391,11 @@ void insert(unsigned row, unsigned col, unsigned digit) {
         return;
     }
     if (userGrid[row][col] != BLANK)
-        cout << "Warning: overwriting " << userGrid[row][col] << " at (" << row << ", " << col << ") with " << digit << ".\r";
-    
+        cout << "Warning: overwriting " << userGrid[row][col] << " at (" << row << ", " << col
+             << ") with " << digit << ".\r";
+
     userGrid[row][col] = digit;
-    
+
     lastPointActed[0] = row;
     lastPointActed[1] = col;
     lastActType = ADD;
@@ -409,9 +407,9 @@ void remove(unsigned row, unsigned col) {
         cout << "Error: cannot remove starting numbers!\r";
         return;
     }
-    if(userGrid[row][col] == 0)
+    if (userGrid[row][col] == 0)
         cout << "Warning: already blank at (" << row << ", " << col << ")\r";
-    
+
     userGrid[row][col] = BLANK;
 
     lastPointActed[0] = row;
@@ -420,7 +418,8 @@ void remove(unsigned row, unsigned col) {
 }
 
 // Processes startGrid and userGrid together to find if user has solved board
-// Checks for conflicting numbers in rows, columns, and boxes, returns true if no conflicts and no BLANK squares
+// Checks for conflicting numbers in rows, columns, and boxes, returns true if no conflicts and no
+// BLANK squares
 bool checkWin() {
     Grid cGrid;  // combinedGrid
     combineGrids(cGrid);
@@ -433,36 +432,38 @@ bool checkWin() {
         for (unsigned c = 0; c < COLS; c++)
             if (cGrid[r][c] == BLANK)  // Can't win with blank squares
                 return false;
-            else // Not blank
-                if (!flags[cGrid[r][c]])  // Digit hasn't been found
+            else                                // Not blank
+                if (!flags[cGrid[r][c]])        // Digit hasn't been found
                     flags[cGrid[r][c]] = true;  // Now it has been found
-                else  // if it has already been found
+                else                            // if it has already been found
                     return false;
         clearFlags(flags);
     }
-    
+
     // Check if rows are discrete
     for (unsigned c = 0; c < COLS; c++) {
         for (unsigned r = 0; r < ROWS; r++)
             // Already checked for blanks and found none
-            if (!flags[cGrid[r][c]])  // Digit hasn't been found
+            if (!flags[cGrid[r][c]])        // Digit hasn't been found
                 flags[cGrid[r][c]] = true;  // Now it has been found
-            else  // if it has already been found
+            else                            // if it has already been found
                 return false;
         // Clear after every column
         clearFlags(flags);
     }
 
     // Check if boxes are discrete
-    for (unsigned rBox = 0; rBox < 3; rBox++) {  // 3 boxes per row
+    for (unsigned rBox = 0; rBox < 3; rBox++) {      // 3 boxes per row
         for (unsigned cBox = 0; cBox < 3; cBox++) {  // 3 boxes per col
             // Inside box
-            for (unsigned r = rBox*3; r < (rBox+1)*3; r++) {  // 3 rows per box, start at beginning of box and end before start of next box (even if the next box doesn't exist)
-                for (unsigned c = rBox*3; c < (rBox+1)*3; c++)  // 3 cols per box
+            for (unsigned r = rBox * 3; r < (rBox + 1) * 3; r++) {
+                // 3 rows per box, start at beginning of box and end before start of next box
+                // (even if the next box doesn't exist)
+                for (unsigned c = rBox * 3; c < (rBox + 1) * 3; c++)  // 3 cols per box
                     // Already checked for blanks and found none
-                    if (!flags[cGrid[r][c]])  // Digit hasn't been found
+                    if (!flags[cGrid[r][c]])        // Digit hasn't been found
                         flags[cGrid[r][c]] = true;  // Now it has been found
-                    else  // if it has already been found
+                    else                            // if it has already been found
                         return false;
             }
             // Clear after every box
@@ -483,22 +484,22 @@ bool checkValid() {
     // Check if columns are discrete
     for (unsigned r = 0; r < ROWS; r++) {
         for (unsigned c = 0; c < COLS; c++)
-            if (startGrid[r][c] != BLANK) {   // We don't care about how many blank squares there are for generating
-                if (!flags[startGrid[r][c]])  // Digit hasn't been found
+            if (startGrid[r][c] != BLANK) {         // We don't care about blank squares
+                if (!flags[startGrid[r][c]])        // Digit hasn't been found
                     flags[startGrid[r][c]] = true;  // Now it has been found
-                else // if it has already been found
+                else                                // if it has already been found
                     return false;
             }
         clearFlags(flags);
     }
-    
+
     // Check if rows are discrete
     for (unsigned c = 0; c < COLS; c++) {
         for (unsigned r = 0; r < ROWS; r++)
-            if (startGrid[r][c] != BLANK) {  // We don't care about how many blank squares there are for generating
-                if (!flags[startGrid[r][c]])  // Digit hasn't been found
+            if (startGrid[r][c] != BLANK) {         // We don't care about blank squares
+                if (!flags[startGrid[r][c]])        // Digit hasn't been found
                     flags[startGrid[r][c]] = true;  // Now it has been found
-                else // if it has already been found
+                else                                // if it has already been found
                     return false;
             }
         // Clear after every column
@@ -506,15 +507,17 @@ bool checkValid() {
     }
 
     // Check if boxes are discrete
-    for (unsigned rBox = 0; rBox < 3; rBox++) {  // 3 boxes per row
+    for (unsigned rBox = 0; rBox < 3; rBox++) {      // 3 boxes per row
         for (unsigned cBox = 0; cBox < 3; cBox++) {  // 3 boxes per col
             // Inside box
-            for (unsigned r = rBox*3; r < (rBox+1)*3; r++) {  // 3 rows per box, start at beginning of box and end before start of next box (even if the next box doesn't exist)
-                for (unsigned c = cBox*3; c < (cBox+1)*3; c++)  // 3 cols per box
-                    if (startGrid[r][c] != BLANK) {  // We don't care about how many blank squares there are for generating
-                        if (!flags[startGrid[r][c]])  // Digit hasn't been found
+            for (unsigned r = rBox * 3; r < (rBox + 1) * 3; r++) {
+                // 3 rows per box, start at beginning of box and end before start of next box
+                // (even if the next box doesn't exist)
+                for (unsigned c = cBox * 3; c < (cBox + 1) * 3; c++)  // 3 cols per box
+                    if (startGrid[r][c] != BLANK) {         // We don't care about blank squares
+                        if (!flags[startGrid[r][c]])        // Digit hasn't been found
                             flags[startGrid[r][c]] = true;  // Now it has been found
-                        else  // if it has already been found
+                        else                                // if it has already been found
                             return false;
                     }
             }
@@ -542,7 +545,7 @@ void countNums() {
     // First, reset
     for (unsigned i = 0; i < ROWS + 1; i++)
         numCounts[i] = 9;
-    
+
     // Now, count down
     for (unsigned r = 0; r < ROWS; r++)
         for (unsigned c = 0; c < COLS; c++)
@@ -557,4 +560,3 @@ unsigned charToUInt(char c) {
     else
         return 0;
 }
-
